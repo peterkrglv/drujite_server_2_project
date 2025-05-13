@@ -1,0 +1,11 @@
+ktor:
+  application:
+    modules:
+      - ru.drujite.ApplicationKt.module
+  deployment:
+    port: 8080
+jwt:
+  audience: "drujite-audience"
+  issuer: "http://localhost/"
+  realm: "ktor sample app"
+  secret: $JWT_SECRET

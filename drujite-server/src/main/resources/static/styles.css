@@ -1,0 +1,20 @@
+/* resources/static/styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #D8A582;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    height: 100vh;
+}
+
+h1 {
+    color: #8E2F20;
+}
+
+p {
+    font-size: 1.2em;
+    color: black;
+}
