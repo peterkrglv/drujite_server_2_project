@@ -78,7 +78,7 @@ fun Application.configureRouting(
             imageRoute(imageService)
         }
 
-        route (v1+ "admin") {
+        route(v1 + "admin") {
             adminAuthRoute(jwtService, userService)
         }
 
@@ -88,6 +88,10 @@ fun Application.configureRouting(
 
         route(v1 + "clothing-item") {
             clothingRoute(clothingService)
+        }
+
+        route(v1 + "characters-clothing") {
+            charactersClothingRoute(clothingService)
         }
 
         get(v1) {

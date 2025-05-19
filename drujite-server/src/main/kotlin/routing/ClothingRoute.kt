@@ -33,18 +33,5 @@ fun Route.clothingRoute(
            val clothingItems = clothingService.getAllClothingItems()
               call.respond(HttpStatusCode.OK, clothingItems)
         }
-
-        post("/to-character") {
-            val request = call.receive<AddCharactersClothingRequest>()
-            val result = clothingService.addClothingItemsToCharacter(
-                characterId = request.characterId,
-                itemsIds = request.itemsIds
-            )
-            if (result) {
-                call.respond(HttpStatusCode.OK)
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Character or clothing item not found")
-            }
-        }
     }
 }
