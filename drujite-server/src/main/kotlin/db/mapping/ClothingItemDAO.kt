@@ -8,7 +8,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 object ClothingItemTable : IntIdTable("clothing_item") {
     val typeId = integer("type_id").references(ClothingTypeTable.id)
     val imageUrl = varchar("image_url", 255).nullable()
-    val iconImageUrl = varchar("icon_image_url", 255).nullable()
+    val iconImageUrl = varchar("image_icon_url", 255).nullable()
 }
 
 class ClothingItemDAO(id: EntityID<Int>): IntEntity(id) {
