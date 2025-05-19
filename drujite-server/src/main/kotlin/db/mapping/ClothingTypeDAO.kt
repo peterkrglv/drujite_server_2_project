@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
-object ClothingTypeTable: IntIdTable("clothing") {
+object ClothingTypeTable: IntIdTable("clothing_type") {
     val name = varchar("name", 255)
 }
 
