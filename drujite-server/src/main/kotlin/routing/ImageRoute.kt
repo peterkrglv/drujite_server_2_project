@@ -15,46 +15,6 @@ fun Route.imageRoute(imageService: ImageService) {
     val logger: Logger = LoggerFactory.getLogger(Route::class.java)
     authenticate {
         post("/{entityType}/{id}") {
-            logger.info("POST img")
-            val entityType = call.parameters["entityType"] ?: return@post call.respond(
-                HttpStatusCode.BadRequest,
-                "Entity type is required"
-            )
-            val id = call.parameters["id"]?.toIntOrNull() ?: return@post call.respond(
-                HttpStatusCode.BadRequest,
-                "Invalid ID"
-            )
-            logger.info("Entity type: $entityType, ID: $id")
-
-            val multipart = call.receiveMultipart()
-            logger.info("Received multipart data")
-            var tempFileBytes: ByteArray? = null
-            var fileExtension: String? = null
-
-            multipart.forEachPart { part ->
-                if (part is PartData.FileItem) {
-                    fileExtension = part.originalFileName?.substringAfterLast('.', "jpg")
-                    tempFileBytes = part.streamProvider().readBytes()
-                }
-                part.dispose()
-            }
-            logger.info("File extension: $fileExtension, File bytes size: ${tempFileBytes?.size}")
-
-            val fileBytes = tempFileBytes // Локальная переменная для безопасного использования
-            if (fileBytes != null) {
-                logger.info("File bytes are not null")
-                val success = imageService.saveImage(entityType, id, fileBytes, fileExtension ?: "jpg")
-                if (success) {
-                    call.respond(HttpStatusCode.OK, "Image uploaded successfully")
-                } else {
-                    call.respond(HttpStatusCode.InternalServerError, "Failed to save image")
-                }
-            } else {
-                call.respond(HttpStatusCode.BadRequest, "Invalid file upload")
-            }
-        }
-
-        post("/{entityType}/{id}/binary") {
             val entityType = call.parameters["entityType"] ?: return@post call.respond(
                 HttpStatusCode.BadRequest,
                 "Entity type is required"

@@ -9,6 +9,7 @@ import io.ktor.server.routing.*
 import models.SessionModel
 import requests.IdRequest
 import requests.SessionRequest
+import responses.IdResponse
 import responses.SessionResponse
 import services.JwtService
 import services.SessionService
@@ -42,8 +43,8 @@ fun Route.sessionRoute(
 
         post {
             val sessionRequest = call.receive<SessionRequest>()
-            sessionService.addSession(sessionRequest)
-            call.respond(HttpStatusCode.Created, sessionRequest.toResponse())
+            val id = sessionService.addSession(sessionRequest)
+            call.respond(HttpStatusCode.Created, IdResponse(id = id))
         }
 
         delete {
@@ -55,14 +56,6 @@ fun Route.sessionRoute(
     }
 }
 
-private fun SessionRequest.toResponse(): SessionResponse = SessionResponse(
-    id = 0,
-    name = this.name,
-    description = this.description,
-    startDate = this.startDate,
-    endDate = this.endDate,
-    imageUrl = this.imageUrl
-)
 
 private fun SessionModel.toResponse(): SessionResponse {
     return SessionResponse(
