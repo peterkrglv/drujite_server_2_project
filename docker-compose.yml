@@ -15,6 +15,8 @@ services:
       - images_sessions:/app/storage/images/sessions
       - images_characters:/app/storage/images/characters
       - images_news:/app/storage/images/news
+      - images_clothing:/app/storage/images/clothing
+      - images_clothingItems:/app/storage/images/clothingItems
 
   pg:
     image: postgres:latest
@@ -44,3 +46,5 @@ volumes:
   images_sessions:
   images_characters:
   images_news:
+  images_clothing:
+  images_clothingItems:
