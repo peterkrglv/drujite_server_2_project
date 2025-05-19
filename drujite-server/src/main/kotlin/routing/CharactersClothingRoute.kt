@@ -19,7 +19,7 @@ fun Route.charactersClothingRoute(
             call.respond(HttpStatusCode.OK, clothingItems)
         }
 
-        post("/characters-clothing") {
+        post {
             val request = call.receive<AddCharactersClothingRequest>()
             val characterId = request.characterId
             val itemsIds = request.itemsIds
