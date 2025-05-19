@@ -61,7 +61,7 @@ private fun SessionRequest.toResponse(): SessionResponse = SessionResponse(
     description = this.description,
     startDate = this.startDate,
     endDate = this.endDate,
-    imageUrl = this.image
+    imageUrl = this.imageUrl
 )
 
 private fun SessionModel.toResponse(): SessionResponse {
