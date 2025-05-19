@@ -8,6 +8,8 @@ import ru.drujite.configuration.configureCORS
 import ru.drujite.configuration.configureMonitoring
 import ru.drujite.configuration.configureSecurity
 import ru.drujite.configuration.configureSerialization
+import ru.drujite.db.repos_impls.ClothingRepositoryImpl
+import ru.drujite.services.ClothingService
 import ru.drujite.services.ImageService
 import services.*
 
@@ -26,6 +28,7 @@ fun Application.module() {
     val eventRepository = EventRepositoryImpl()
     val clanRepository = ClanRepositoryImpl()
     val newsRepository = NewsRepositoryImpl()
+    val clothingRepository = ClothingRepositoryImpl()
 
 
     val userService = UserService(userRepository)
@@ -37,7 +40,8 @@ fun Application.module() {
     val timeTableService = TimeTableService(timeTableRepository, eventRepository)
     val clanService = ClanService(clanRepository)
     val newsService = NewsService(newsRepository)
-    val imageService = ImageService(characterRepository, newsRepository, sessionRepository)
+    val imageService = ImageService(characterRepository, newsRepository, sessionRepository, clothingRepository)
+    val clothingService = ClothingService(clothingRepository)
 
     configureSerialization()
     configureSecurity(jwtService)
@@ -51,7 +55,8 @@ fun Application.module() {
         timeTableService,
         clanService,
         newsService,
-        imageService
+        imageService,
+        clothingService
     )
     configureDatabases()
     configureMonitoring()

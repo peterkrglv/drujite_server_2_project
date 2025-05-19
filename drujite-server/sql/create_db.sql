@@ -205,3 +205,36 @@ CREATE TRIGGER update_goals_modtime
     ON goals
     FOR EACH ROW
 EXECUTE PROCEDURE update_modified_column();
+
+
+--clothing
+
+-- clothing_type table
+CREATE TABLE clothing_type (
+                               id SERIAL PRIMARY KEY,
+                               name VARCHAR(255) NOT NULL,
+                               created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
+                               updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+);
+
+-- clothing_item table
+CREATE TABLE clothing_item (
+                               id SERIAL PRIMARY KEY,
+                               type_id INT REFERENCES clothing_type(id) ON DELETE CASCADE,  -- Corrected FK column name
+                               image_url VARCHAR(255),
+                               image_icon_url VARCHAR(255),
+                               created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
+                               updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+);
+
+
+-- character_clothing table
+CREATE TABLE character_clothing (
+                                    id SERIAL PRIMARY KEY,
+                                    character_id INT REFERENCES characters(id) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+                                    clothing_item_id INT REFERENCES clothing_item(id) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+                                    created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
+                                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+
+);
+

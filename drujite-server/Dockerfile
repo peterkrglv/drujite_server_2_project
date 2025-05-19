@@ -10,11 +10,13 @@ COPY application.yaml /app/application.yaml
 ##storage for images
 RUN mkdir -p /app/storage/images/sessions \
     && mkdir -p /app/storage/images/characters \
-    && mkdir -p /app/storage/images/news
+    && mkdir -p /app/storage/images/news \
+    && mkdir -p /app/storage/images/clothing \
 
 VOLUME /app/storage/images/sessions
 VOLUME /app/storage/images/characters
 VOLUME /app/storage/images/news
+VOLUME /app/storage/images/clothing
 
 EXPOSE 8080
 

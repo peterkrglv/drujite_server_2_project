@@ -3,12 +3,14 @@ package ru.drujite.services
 import db.repos.CharacterRepository
 import db.repos.NewsRepository
 import db.repos.SessionRepository
+import ru.drujite.db.repos.ClothingRepository
 import java.io.File
 
 class ImageService(
     private val characterRepository: CharacterRepository,
     private val newsRepository: NewsRepository,
     private val sessionRepository: SessionRepository,
+    private val clothingRepository: ClothingRepository,
     private val basePath: String = "storage/images"
 ) {
     suspend fun saveImage(entityType: String, id: Int, fileBytes: ByteArray, fileExtension: String = "jpg"): Boolean {
@@ -24,6 +26,8 @@ class ImageService(
             "characters" -> characterRepository.addImageUrl(id, imageUrl)
             "news" -> newsRepository.addImageUrl(id, imageUrl)
             "sessions" -> sessionRepository.addImageUrl(id, imageUrl)
+            "clothing" -> clothingRepository.addImageUrl(id, imageUrl)
+            "clothingIcon" -> clothingRepository.addIconUrl(id, imageUrl)
             else -> false
         }
     }
