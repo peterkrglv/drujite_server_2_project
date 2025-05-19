@@ -6,6 +6,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import responses.IdResponse
+import ru.drujite.requests.AddCharactersClothingRequest
 import ru.drujite.services.ClothingService
 
 fun Route.clothingRoute(
@@ -31,6 +32,19 @@ fun Route.clothingRoute(
         get("/all") {
            val clothingItems = clothingService.getAllClothingItems()
               call.respond(HttpStatusCode.OK, clothingItems)
+        }
+
+        post("/to-character") {
+            val request = call.receive<AddCharactersClothingRequest>()
+            val result = clothingService.addClothingItemsToCharacter(
+                characterId = request.characterId,
+                itemsIds = request.itemsIds
+            )
+            if (result) {
+                call.respond(HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.NotFound, "Character or clothing item not found")
+            }
         }
     }
 }
