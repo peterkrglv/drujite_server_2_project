@@ -37,8 +37,10 @@ fun Route.clanRoute(
         }
 
         delete() {
-            val request = call.receive<IdRequest>()
-            val result = clanService.deleteClan(request.id)
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@delete call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val result = clanService.deleteClan(id)
             if (result) {
                 call.respond(HttpStatusCode.OK)
             } else {

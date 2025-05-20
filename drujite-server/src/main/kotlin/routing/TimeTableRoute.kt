@@ -23,8 +23,10 @@ fun Route.timeTableRoute(
         }
 
         delete {
-            val request = call.receive<IdRequest>()
-            val result = timeTableService.deleteTimeTable(request.id)
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@delete call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val result = timeTableService.deleteTimeTable(id)
             if (result) {
                 call.respond(HttpStatusCode.OK)
             } else {

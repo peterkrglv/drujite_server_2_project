@@ -39,8 +39,10 @@ fun Route.goalRoute(
         }
 
         delete() {
-            val request = call.receive<IdRequest>()
-            val result = goalService.deleteGoal(request.id)
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@delete call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val result = goalService.deleteGoal(id)
             if (result) {
                 call.respond(HttpStatusCode.OK)
             } else {

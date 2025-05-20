@@ -26,8 +26,10 @@ fun Route.newsRoute(
         }
 
         delete() {
-            val request = call.receive<IdRequest>()
-            val result = newsService.delete(request.id)
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@delete call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val result = newsService.delete(id)
             if (result) {
                 call.respond(HttpStatusCode.OK)
             } else {

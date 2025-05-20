@@ -27,7 +27,9 @@ fun Route.clothingTypeRoute(
         }
 
         delete {
-            val id = call.receive<IdResponse>().id
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@delete call.respond(
+                HttpStatusCode.BadRequest
+            )
             val result = clothingService.deleteClothingType(id)
             if (result) {
                 call.respond(HttpStatusCode.NoContent)

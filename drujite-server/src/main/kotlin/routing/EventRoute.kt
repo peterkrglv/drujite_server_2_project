@@ -30,8 +30,10 @@ fun Route.eventRoute(
         }
 
         delete() {
-            val request = call.receive<IdRequest>()
-            val result = timeTableService.deleteEvent(request.id)
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@delete call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val result = timeTableService.deleteEvent(id)
             if (result) {
                 call.respond(HttpStatusCode.OK)
             } else {

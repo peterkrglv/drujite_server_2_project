@@ -48,8 +48,10 @@ fun Route.sessionRoute(
         }
 
         delete {
-            val request = call.receive<IdRequest>()
-            sessionService.deleteSession(request.id)
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@delete call.respond(
+                HttpStatusCode.BadRequest
+            )
+            sessionService.deleteSession(id)
             call.respond(HttpStatusCode.NoContent)
         }
 

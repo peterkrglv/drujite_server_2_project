@@ -20,7 +20,9 @@ fun Route.clothingRoute(
         }
 
         delete {
-            val id = call.receive<IdResponse>().id
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@delete call.respond(
+                HttpStatusCode.BadRequest
+            )
             val result = clothingService.deleteClothingItem(id)
             if (result) {
                 call.respond(HttpStatusCode.NoContent)
@@ -30,8 +32,8 @@ fun Route.clothingRoute(
         }
 
         get("/all") {
-           val clothingItems = clothingService.getAllClothingItems()
-              call.respond(HttpStatusCode.OK, clothingItems)
+            val clothingItems = clothingService.getAllClothingItems()
+            call.respond(HttpStatusCode.OK, clothingItems)
         }
     }
 }
