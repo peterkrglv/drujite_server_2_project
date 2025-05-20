@@ -42,7 +42,7 @@ fun Route.characterRoute(
         }
 
         delete {
-            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@get call.respond(
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@delete call.respond(
                 HttpStatusCode.BadRequest
             )
             val result = characterService.deleteCharacter(id)
