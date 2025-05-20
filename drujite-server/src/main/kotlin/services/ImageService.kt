@@ -27,7 +27,7 @@ class ImageService(
             "news" -> newsRepository.addImageUrl(id, imageUrl)
             "sessions" -> sessionRepository.addImageUrl(id, imageUrl)
             "clothing" -> clothingRepository.addImageUrl(id, imageUrl)
-            "clothingIcon" -> clothingRepository.addIconUrl(id, imageUrl)
+            "clothingIcons" -> clothingRepository.addIconUrl(id, imageUrl)
             else -> false
         }
     }
