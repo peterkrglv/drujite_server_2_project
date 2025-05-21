@@ -13,6 +13,7 @@ object SessionTable : IntIdTable("sessions") {
     val startDate = datetime("start_date")
     val endDate = datetime("end_date")
     val imageUrl = varchar("image_url", 255).nullable()
+    val qr = varchar("qr", 255).nullable()
 }
 
 class SessionDAO(id: EntityID<Int>) : IntEntity(id) {
@@ -23,6 +24,7 @@ class SessionDAO(id: EntityID<Int>) : IntEntity(id) {
     var startDate by SessionTable.startDate
     var endDate by SessionTable.endDate
     var imageUrl by SessionTable.imageUrl
+    var qr by SessionTable.qr
 }
 
 fun daoToModel(dao: SessionDAO) = SessionModel(

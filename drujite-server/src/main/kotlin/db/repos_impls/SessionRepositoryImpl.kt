@@ -55,4 +55,10 @@ class SessionRepositoryImpl : SessionRepository {
             } ?: false
         }
     }
+
+    override suspend fun getSessionByQr(qr: String): SessionModel? {
+        return suspendTransaction {
+            SessionDAO.find { SessionTable.qr eq qr }.firstOrNull()?.let(::daoToModel)
+        }
+    }
 }

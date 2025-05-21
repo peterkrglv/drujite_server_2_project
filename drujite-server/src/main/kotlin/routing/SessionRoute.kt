@@ -11,6 +11,7 @@ import requests.IdRequest
 import requests.SessionRequest
 import responses.IdResponse
 import responses.SessionResponse
+import ru.drujite.requests.AddSessionByQRRequest
 import services.JwtService
 import services.SessionService
 
@@ -54,7 +55,6 @@ fun Route.sessionRoute(
             sessionService.deleteSession(id)
             call.respond(HttpStatusCode.NoContent)
         }
-
     }
 }
 

@@ -50,6 +50,9 @@ CREATE TABLE sessions
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
 
+ALTER TABLE sessions
+    ADD COLUMN qr VARCHAR(255) DEFAULT NULL;
+
 CREATE TRIGGER update_sessions_modtime
     BEFORE UPDATE
     ON sessions

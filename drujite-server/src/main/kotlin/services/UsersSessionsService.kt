@@ -1,13 +1,16 @@
 package services
 
 import db.repos.CharacterRepository
+import db.repos.SessionRepository
 import db.repos.UsersSessionsRepository
 import models.CharacterModel
+import models.SessionModel
 import java.util.*
 
 class UsersSessionsService(
     private val usersSessionsRepository: UsersSessionsRepository,
-    private val characterRepository: CharacterRepository
+    private val characterRepository: CharacterRepository,
+    private val sessionRepository: SessionRepository
 ) {
     suspend fun addUserSession(
         userId: String,
@@ -78,5 +81,21 @@ class UsersSessionsService(
     ): List<CharacterModel> {
         val characterIds = usersSessionsRepository.getSessionsCharactersIds(sessionId)
         return characterIds.mapNotNull { characterRepository.get(it) }
+    }
+
+    suspend fun addUsersSessionByQr(
+        userId: String,
+        qr: String
+    ): SessionModel? {
+        val session = sessionRepository.getSessionByQr(qr)
+        if (session != null) {
+            usersSessionsRepository.addUserSession(
+                userId = UUID.fromString(userId),
+                sessionId = session.id
+            )
+            return session
+        } else {
+            return null
+        }
     }
 }

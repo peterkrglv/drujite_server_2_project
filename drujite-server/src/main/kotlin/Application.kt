@@ -34,7 +34,7 @@ fun Application.module() {
     val userService = UserService(userRepository)
     val jwtService = JwtService(this, userService)
     val sessionService = SessionService(sessionRepository)
-    val usersSessionService = UsersSessionsService(usersSessionRepository, characterRepository)
+    val usersSessionService = UsersSessionsService(usersSessionRepository, characterRepository, sessionRepository)
     val characterService = CharacterService(characterRepository, usersSessionRepository, clanRepository)
     val goalService = GoalService(goalRepository, usersSessionRepository)
     val timeTableService = TimeTableService(timeTableRepository, eventRepository)
