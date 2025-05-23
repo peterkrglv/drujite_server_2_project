@@ -62,6 +62,18 @@ fun Route.eventRoute(
                 call.respond(HttpStatusCode.NotFound)
             }
         }
+
+        get("by-timetable") {
+            val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@get call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val events = timeTableService.getEventsByTimetableId(id)
+            if (events.isNotEmpty()) {
+                call.respond(HttpStatusCode.OK, events.map { it.toResponse() })
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
+        }
     }
 }
 

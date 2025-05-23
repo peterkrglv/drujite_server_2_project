@@ -10,6 +10,7 @@ import requests.AddCharacterRequest
 import requests.IdRequest
 import responses.CharacterResponse
 import responses.IdResponse
+import ru.drujite.requests.ChangeCharactersStoryRequest
 import services.CharacterService
 
 fun Route.characterRoute(
@@ -62,6 +63,16 @@ fun Route.characterRoute(
                 call.respond(HttpStatusCode.NotFound)
             } else {
                 call.respond(HttpStatusCode.OK, character)
+            }
+        }
+
+        put("story") {
+            val request = call.receive<ChangeCharactersStoryRequest>()
+            val result = characterService.changeCharactersStory(request.characterId, request.story)
+            if (result) {
+                call.respond(HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
             }
         }
     }

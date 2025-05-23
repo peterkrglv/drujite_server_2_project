@@ -5,7 +5,7 @@ import db.mapping.suspendTransaction
 import db.repos.CharacterRepository
 import models.CharacterModel
 
-class CharacterRepositoryImpl: CharacterRepository {
+class CharacterRepositoryImpl : CharacterRepository {
     override suspend fun add(character: CharacterModel): Int {
         return suspendTransaction {
             CharacterDAO.new {
@@ -41,6 +41,15 @@ class CharacterRepositoryImpl: CharacterRepository {
         return suspendTransaction {
             CharacterDAO.findById(id)?.let {
                 it.imageUrl = imageUrl
+                true
+            } ?: false
+        }
+    }
+
+    override suspend fun changeStory(id: Int, story: String): Boolean {
+        return suspendTransaction {
+            CharacterDAO.findById(id)?.let {
+                it.story = story
                 true
             } ?: false
         }

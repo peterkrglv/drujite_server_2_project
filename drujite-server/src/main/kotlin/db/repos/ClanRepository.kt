@@ -8,4 +8,5 @@ interface ClanRepository {
     suspend fun delete(id: Int): Boolean
     suspend fun addClanToSession(clanIdAdd: Int, sessionIdAdd: Int): Boolean
     suspend fun getSessionsClans(sessionId: Int): List<ClanModel>
+    suspend fun getAll(): List<ClanModel>
 }

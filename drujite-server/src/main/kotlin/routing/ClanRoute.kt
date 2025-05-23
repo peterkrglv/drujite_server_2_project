@@ -65,6 +65,11 @@ fun Route.clanRoute(
             val clans = clanService.getSessionsClans(id)
             call.respond(HttpStatusCode.OK, clans.map { it.toResponse() })
         }
+
+        get("all") {
+            val clans = clanService.getAllClans()
+            call.respond(HttpStatusCode.OK, clans.map { it.toResponse() })
+        }
     }
 }
 

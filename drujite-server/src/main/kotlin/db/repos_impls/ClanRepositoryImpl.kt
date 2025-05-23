@@ -50,4 +50,10 @@ class ClanRepositoryImpl : ClanRepository {
                 }
         }
     }
+
+    override suspend fun getAll(): List<ClanModel> {
+        return suspendTransaction {
+            ClanDAO.all().map { daoToModel(it) }
+        }
+    }
 }

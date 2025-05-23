@@ -15,4 +15,6 @@ class ClanService (
     suspend fun addClanToSession(clanId: Int, sessionId: Int) = clanRepository.addClanToSession(clanId, sessionId)
 
     suspend fun getSessionsClans(sessionId: Int) = clanRepository.getSessionsClans(sessionId)
+
+    suspend fun getAllClans() = clanRepository.getAll()
 }

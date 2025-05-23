@@ -32,4 +32,6 @@ class CharacterService(
         }
         return null
     }
+
+    suspend fun changeCharactersStory(id: Int, newStory: String) = characterRepository.changeStory(id, newStory)
 }

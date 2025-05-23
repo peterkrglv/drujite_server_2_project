@@ -10,6 +10,7 @@ class TimeTableService(
     private val eventRepository: EventRepository
 ) {
     suspend fun getTimeTable(timeTableId: Int) = timeTableRepository.getBySessionAndDate(timeTableId)
+
     suspend fun addTimeTable(timeTable: TimeTableModel) = timeTableRepository.add(timeTable)
 
     suspend fun deleteTimeTable(timeTableId: Int) = timeTableRepository.delete(timeTableId)
@@ -32,6 +33,12 @@ class TimeTableService(
         val timeTable = timeTableRepository.getBySessionAndDate(sessionId, date) ?: return emptyList()
         val eventIds = eventRepository.getTimetableEventIds(timeTable.id)
         return eventIds.mapNotNull { eventRepository.get(it) }
+            .sortedBy { it.num }
+    }
+
+    suspend fun getEventsByTimetableId(timetableId: Int): List<EventModel> {
+        val events = eventRepository.getTimetableEventIds(timetableId)
+        return events.mapNotNull { eventRepository.get(it) }
             .sortedBy { it.num }
     }
 }
