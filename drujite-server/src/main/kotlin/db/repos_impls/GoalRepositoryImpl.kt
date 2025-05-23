@@ -6,10 +6,11 @@ import db.mapping.UsersSessionsTable
 import db.mapping.suspendTransaction
 import db.repos.GoalRepository
 import models.GoalModel
-import ru.drujite.models.GoalModelWithCharacterdId
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.innerJoin
+import org.jetbrains.exposed.sql.selectAll
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import ru.drujite.models.GoalModelWithCharacterdId
 
 class GoalRepositoryImpl : GoalRepository {
 
@@ -73,28 +74,25 @@ class GoalRepositoryImpl : GoalRepository {
         return suspendTransaction {
             try {
                 logger.info("Starting getSessionsGoals with sessionId: $sessionId")
-                val results = (GoalTable innerJoin UsersSessionsTable)
-                    .select(UsersSessionsTable.sessionId eq sessionId)
-                    .also { logger.info("Query returned ${it.count()} rows") }
-                    .mapNotNull { row ->
-                        try {
-                            logger.info("Processing row: $row")
-                            row[UsersSessionsTable.characterId]?.let { characterId ->
-                                val goal = GoalModelWithCharacterdId(
-                                    id = row[GoalTable.id].value,
-                                    name = row[GoalTable.name],
-                                    isCompleted = row[GoalTable.isCompleted],
-                                    characterId = characterId
-                                )
-                                logger.info("Mapped goal: $goal")
-                                goal
-                            }
-                        } catch (e: Exception) {
-                            logger.error("Error processing row: $row, exception: ${e.message}", e)
-                            null
-                        }
+                val results = GoalTable.innerJoin(
+                    UsersSessionsTable,
+                    { usersSessionId },
+                    { id },
+                    additionalConstraint = { UsersSessionsTable.sessionId eq sessionId }
+                ).selectAll().mapNotNull {
+                    val characterId = it[UsersSessionsTable.characterId]
+                    if (characterId == null) {
+                        logger.warn("Character ID is null for sessionId: $sessionId")
+                        null
+                    } else {
+                        GoalModelWithCharacterdId(
+                            id = it[GoalTable.id].value,
+                            characterId = it[UsersSessionsTable.characterId] ?: -1,
+                            name = it[GoalTable.name],
+                            isCompleted = it[GoalTable.isCompleted]
+                        )
                     }
-
+                }
                 logger.info("Finished processing rows. Total goals: ${results.size}")
                 results
             } catch (e: Exception) {
