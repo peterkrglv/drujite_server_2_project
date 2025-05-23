@@ -75,17 +75,15 @@ class GoalRepositoryImpl : GoalRepository {
                 (GoalTable innerJoin UsersSessionsTable)
                     .select(UsersSessionsTable.sessionId eq sessionId)
                     .mapNotNull { row ->
-                        try {
-                            row[UsersSessionsTable.characterId]?.let { characterId ->
-                                GoalModelWithCharacterdId(
-                                    id = row[GoalTable.id].value,
-                                    name = row[GoalTable.name],
-                                    isCompleted = row[GoalTable.isCompleted],
-                                    characterId = characterId
-                                )
-                            }
-                        } catch (e: Exception) {
-                            logger.info("Error in getSessionsGoals: ${e.message}")
+                        val characterId = row[UsersSessionsTable.characterId] // Проверяем значение
+                        if (characterId != null) {
+                            GoalModelWithCharacterdId(
+                                id = row[GoalTable.id].value,
+                                name = row[GoalTable.name],
+                                isCompleted = row[GoalTable.isCompleted],
+                                characterId = characterId
+                            )
+                        } else {
                             null
                         }
                     }
