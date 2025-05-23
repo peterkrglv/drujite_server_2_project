@@ -11,6 +11,8 @@ import requests.AddGoalRequest
 import requests.IdRequest
 import responses.GoalResponse
 import responses.IdResponse
+import ru.drujite.models.GoalModelWithCharacterdId
+import ru.drujite.responses.GoalModelWithCharacterIdResponse
 import services.GoalService
 import services.JwtService
 
@@ -34,7 +36,7 @@ fun Route.goalRoute(
 
         post() {
             val request = call.receive<AddGoalRequest>()
-            val goalId = goalService.addGoal(request)?: return@post call.respond(HttpStatusCode.BadRequest)
+            val goalId = goalService.addGoal(request) ?: return@post call.respond(HttpStatusCode.BadRequest)
             call.respond(HttpStatusCode.Created, IdResponse(goalId))
         }
 
@@ -73,6 +75,17 @@ fun Route.goalRoute(
                 call.respond(HttpStatusCode.NotFound)
             }
         }
+
+        get("session-all") {
+            val sessionId = call.request.queryParameters["id"]?.toIntOrNull() ?: return@get call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val goals = goalService.getSessionsGoals(sessionId)
+            call.respond(
+                HttpStatusCode.OK,
+                goals.map { it.toResponse() }
+            )
+        }
     }
 }
 
@@ -81,4 +94,11 @@ private fun GoalModel.toResponse() = GoalResponse(
     characterId = this.usersSessionId,
     name = this.name,
     isCompleted = this.isCompleted,
+)
+
+private fun GoalModelWithCharacterdId.toResponse() = GoalModelWithCharacterIdResponse(
+    id = this.id,
+    name = this.name,
+    isCompleted = this.isCompleted,
+    characterId = this.characterId,
 )

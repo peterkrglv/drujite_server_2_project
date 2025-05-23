@@ -2,11 +2,14 @@ package db.repos_impls
 
 import db.mapping.GoalDAO
 import db.mapping.GoalTable
+import db.mapping.UsersSessionsTable
 import db.mapping.suspendTransaction
 import db.repos.GoalRepository
 import models.GoalModel
+import ru.drujite.models.GoalModelWithCharacterdId
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
-class GoalRepositoryImpl: GoalRepository {
+class GoalRepositoryImpl : GoalRepository {
     override suspend fun add(goal: GoalModel): Int {
         return suspendTransaction {
             GoalDAO.new {
@@ -59,6 +62,23 @@ class GoalRepositoryImpl: GoalRepository {
                 it.flush()
                 true
             } ?: false
+        }
+    }
+
+    override suspend fun getSessionsGoals(sessionId: Int): List<GoalModelWithCharacterdId> {
+        return suspendTransaction {
+            (GoalTable innerJoin UsersSessionsTable)
+                .select(UsersSessionsTable.sessionId eq sessionId)
+                .mapNotNull { row ->
+                    row[UsersSessionsTable.characterId]?.let { characterId ->
+                        GoalModelWithCharacterdId(
+                            id = row[GoalTable.id].value,
+                            name = row[GoalTable.name],
+                            isCompleted = row[GoalTable.isCompleted],
+                            characterId = characterId
+                        )
+                    }
+                }
         }
     }
 }

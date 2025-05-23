@@ -4,6 +4,7 @@ import db.repos.GoalRepository
 import db.repos.UsersSessionsRepository
 import models.GoalModel
 import requests.AddGoalRequest
+import ru.drujite.models.GoalModelWithCharacterdId
 import java.util.*
 
 class GoalService(
@@ -36,4 +37,8 @@ class GoalService(
 
     suspend fun updateGoalStatus(id: Int) =
         goalRepository.changeStatus(id)
+
+    suspend fun getSessionsGoals(sessionId: Int): List<GoalModelWithCharacterdId> {
+        return goalRepository.getSessionsGoals(sessionId)
+    }
 }
