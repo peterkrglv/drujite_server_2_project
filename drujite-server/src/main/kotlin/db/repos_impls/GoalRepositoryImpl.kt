@@ -10,6 +10,7 @@ import ru.drujite.models.GoalModelWithCharacterdId
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 
 class GoalRepositoryImpl : GoalRepository {
 
@@ -72,10 +73,16 @@ class GoalRepositoryImpl : GoalRepository {
     override suspend fun getSessionsGoals(sessionId: Int): List<GoalModelWithCharacterdId> {
         return suspendTransaction {
             try {
-                (GoalTable innerJoin UsersSessionsTable)
-                    .select(UsersSessionsTable.sessionId eq sessionId)
+                val userSessions = UsersSessionsTable
+                    .select(UsersSessionsTable.sessionId eq sessionId).associate { row ->
+                        row[UsersSessionsTable.id].value to row[UsersSessionsTable.characterId]
+                    }
+
+                GoalTable
+                    .select(GoalTable.usersSessionId inList userSessions.keys)
                     .mapNotNull { row ->
-                        val characterId = row[UsersSessionsTable.characterId] // Проверяем значение
+                        val usersSessionId = row[GoalTable.usersSessionId]
+                        val characterId = userSessions[usersSessionId]
                         if (characterId != null) {
                             GoalModelWithCharacterdId(
                                 id = row[GoalTable.id].value,
