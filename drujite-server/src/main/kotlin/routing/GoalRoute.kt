@@ -1,5 +1,6 @@
 package routing
 
+import db.repos_impls.EventRepositoryImpl
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -7,6 +8,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import models.GoalModel
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import requests.AddGoalRequest
 import requests.IdRequest
 import responses.GoalResponse
@@ -17,10 +20,13 @@ import services.GoalService
 import services.JwtService
 
 
+
+val logger: Logger = LoggerFactory.getLogger(EventRepositoryImpl::class.java)
 fun Route.goalRoute(
     goalService: GoalService,
     jwtService: JwtService,
 ) {
+
     authenticate {
         get() {
             val id = call.request.queryParameters["id"]?.toIntOrNull() ?: return@get call.respond(
@@ -80,7 +86,9 @@ fun Route.goalRoute(
             val sessionId = call.request.queryParameters["id"]?.toIntOrNull() ?: return@get call.respond(
                 HttpStatusCode.BadRequest
             )
+            logger.info("sessionId: $sessionId")
             val goals = goalService.getSessionsGoals(sessionId)
+            logger.info("goals: $goals")
             call.respond(
                 HttpStatusCode.OK,
                 goals.map { it.toResponse() }

@@ -8,8 +8,12 @@ import db.repos.GoalRepository
 import models.GoalModel
 import ru.drujite.models.GoalModelWithCharacterdId
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class GoalRepositoryImpl : GoalRepository {
+
+    private val logger: Logger = LoggerFactory.getLogger(GoalRepositoryImpl::class.java)
     override suspend fun add(goal: GoalModel): Int {
         return suspendTransaction {
             GoalDAO.new {
@@ -67,18 +71,28 @@ class GoalRepositoryImpl : GoalRepository {
 
     override suspend fun getSessionsGoals(sessionId: Int): List<GoalModelWithCharacterdId> {
         return suspendTransaction {
-            (GoalTable innerJoin UsersSessionsTable)
-                .select(UsersSessionsTable.sessionId eq sessionId)
-                .mapNotNull { row ->
-                    row[UsersSessionsTable.characterId]?.let { characterId ->
-                        GoalModelWithCharacterdId(
-                            id = row[GoalTable.id].value,
-                            name = row[GoalTable.name],
-                            isCompleted = row[GoalTable.isCompleted],
-                            characterId = characterId
-                        )
+            try {
+                (GoalTable innerJoin UsersSessionsTable)
+                    .select(UsersSessionsTable.sessionId eq sessionId)
+                    .mapNotNull { row ->
+                        try {
+                            row[UsersSessionsTable.characterId]?.let { characterId ->
+                                GoalModelWithCharacterdId(
+                                    id = row[GoalTable.id].value,
+                                    name = row[GoalTable.name],
+                                    isCompleted = row[GoalTable.isCompleted],
+                                    characterId = characterId
+                                )
+                            }
+                        } catch (e: Exception) {
+                            logger.info("Error in getSessionsGoals: ${e.message}")
+                            null
+                        }
                     }
-                }
+            } catch (e: Exception) {
+                logger.info("Error in getSessionsGoals: ${e.message}")
+                emptyList()
+            }
         }
     }
 }
