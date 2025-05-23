@@ -10,7 +10,6 @@ import ru.drujite.models.GoalModelWithCharacterdId
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 
 class GoalRepositoryImpl : GoalRepository {
 
@@ -73,29 +72,33 @@ class GoalRepositoryImpl : GoalRepository {
     override suspend fun getSessionsGoals(sessionId: Int): List<GoalModelWithCharacterdId> {
         return suspendTransaction {
             try {
-                val userSessions = UsersSessionsTable
-                    .select(UsersSessionsTable.sessionId eq sessionId).associate { row ->
-                        row[UsersSessionsTable.id].value to row[UsersSessionsTable.characterId]
-                    }
-
-                GoalTable
-                    .select(GoalTable.usersSessionId inList userSessions.keys)
+                logger.info("Starting getSessionsGoals with sessionId: $sessionId")
+                val results = (GoalTable innerJoin UsersSessionsTable)
+                    .select(UsersSessionsTable.sessionId eq sessionId)
+                    .also { logger.info("Query returned ${it.count()} rows") }
                     .mapNotNull { row ->
-                        val usersSessionId = row[GoalTable.usersSessionId]
-                        val characterId = userSessions[usersSessionId]
-                        if (characterId != null) {
-                            GoalModelWithCharacterdId(
-                                id = row[GoalTable.id].value,
-                                name = row[GoalTable.name],
-                                isCompleted = row[GoalTable.isCompleted],
-                                characterId = characterId
-                            )
-                        } else {
+                        try {
+                            logger.info("Processing row: $row")
+                            row[UsersSessionsTable.characterId]?.let { characterId ->
+                                val goal = GoalModelWithCharacterdId(
+                                    id = row[GoalTable.id].value,
+                                    name = row[GoalTable.name],
+                                    isCompleted = row[GoalTable.isCompleted],
+                                    characterId = characterId
+                                )
+                                logger.info("Mapped goal: $goal")
+                                goal
+                            }
+                        } catch (e: Exception) {
+                            logger.error("Error processing row: $row, exception: ${e.message}", e)
                             null
                         }
                     }
+
+                logger.info("Finished processing rows. Total goals: ${results.size}")
+                results
             } catch (e: Exception) {
-                logger.info("Error in getSessionsGoals: ${e.message}")
+                logger.error("Error in getSessionsGoals: ${e.message}", e)
                 emptyList()
             }
         }
