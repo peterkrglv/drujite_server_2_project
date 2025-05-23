@@ -17,13 +17,19 @@ class SessionRepositoryImpl : SessionRepository {
 
     override suspend fun add(session: SessionModel): Int {
         return suspendTransaction {
-            SessionDAO.new {
+            val id = SessionDAO.new {
                 name = session.name
                 description = session.description
                 startDate = LocalDateTime.parse(session.startDate, formatter)
                 endDate = LocalDateTime.parse(session.endDate, formatter)
                 imageUrl = session.imageUrl
             }.id.value
+            val qrLink = "https://divinaition.online/drujite/session-qr/" + id.toString()
+            SessionDAO.findById(id)?.let {
+                it.qr = qrLink
+                it.flush()
+            }
+            id
         }
     }
 

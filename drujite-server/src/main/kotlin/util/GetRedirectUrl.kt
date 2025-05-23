@@ -11,3 +11,9 @@ fun getRedirectedUrl(url: String): String? {
     connection.disconnect()
     return redirectedUrl
 }
+
+fun main() {
+    val url = "qr.fm/bMDxkP" // Замените на ваш URL
+    val redirectedUrl = getRedirectedUrl(url)
+    println("Redirected URL: $redirectedUrl")
+}

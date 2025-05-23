@@ -20,7 +20,7 @@ class SessionService(
             description = request.description,
             startDate = request.startDate,
             endDate = request.endDate,
-            imageUrl = request.imageUrl,
+            imageUrl = request.imageUrl
         )
     )
 
