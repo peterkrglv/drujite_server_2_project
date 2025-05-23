@@ -5,6 +5,7 @@ import db.repos.SessionRepository
 import db.repos.UsersSessionsRepository
 import models.CharacterModel
 import models.SessionModel
+import ru.drujite.util.getRedirectedUrl
 import java.util.*
 
 class UsersSessionsService(
@@ -58,7 +59,7 @@ class UsersSessionsService(
             userId = UUID.fromString(userId),
             sessionId = sessionId
         )
-        return  characterId?.let { characterRepository.get(it) }
+        return characterId?.let { characterRepository.get(it) }
     }
 
     suspend fun getCharacters(
@@ -87,15 +88,16 @@ class UsersSessionsService(
         userId: String,
         qr: String
     ): SessionModel? {
-        val session = sessionRepository.getSessionByQr(qr)
-        if (session != null) {
-            usersSessionsRepository.addUserSession(
-                userId = UUID.fromString(userId),
-                sessionId = session.id
-            )
-            return session
-        } else {
-            return null
+        val redirectedQrLink = getRedirectedUrl(qr)
+        return redirectedQrLink?.let {
+            val session = sessionRepository.getSessionByQr(redirectedQrLink)
+            session?.let {
+                usersSessionsRepository.addUserSession(
+                    userId = UUID.fromString(userId),
+                    sessionId = session.id
+                )
+                session
+            }
         }
     }
 }
