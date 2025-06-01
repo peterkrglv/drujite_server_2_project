@@ -1,4 +1,4 @@
-package ru.drujite.models
+package models
 
 import java.util.UUID
 
@@ -11,5 +11,4 @@ data class UserModel(
     val gender: String,
     val isAdmin: Boolean = false
 )
-
 

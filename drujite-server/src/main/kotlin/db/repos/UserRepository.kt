@@ -1,6 +1,6 @@
 package db.repos
 
-import ru.drujite.models.UserModel
+import models.UserModel
 import java.util.*
 
 interface UserRepository {

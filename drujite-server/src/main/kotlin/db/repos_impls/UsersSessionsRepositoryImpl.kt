@@ -6,8 +6,8 @@ import daoToModel
 import db.mapping.*
 import db.repos.UsersSessionsRepository
 import models.SessionModel
+import models.UserModel
 import org.jetbrains.exposed.sql.and
-import ru.drujite.models.UserModel
 import java.util.*
 
 class UsersSessionsRepositoryImpl : UsersSessionsRepository {
@@ -117,6 +117,15 @@ class UsersSessionsRepositoryImpl : UsersSessionsRepository {
                 UserDAO.find { UserTable.id eq it }.firstOrNull()
             }
             user?.let { daoToModel(it) }
+        }
+    }
+
+    override suspend fun getIdByCharacterAndSession(characterId: Int, sessionId: Int): Int? {
+        return suspendTransaction {
+            val existingSession =
+                UsersSessionsDAO.find { UsersSessionsTable.characterId eq characterId and (UsersSessionsTable.sessionId eq sessionId) }
+                    .firstOrNull()
+            return@suspendTransaction existingSession?.id?.value
         }
     }
 

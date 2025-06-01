@@ -1,7 +1,7 @@
 package services
 
 import db.repos.UserRepository
-import ru.drujite.models.UserModel
+import models.UserModel
 import java.util.*
 
 class UserService (

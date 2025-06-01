@@ -6,8 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import io.ktor.server.application.*
 import io.ktor.server.auth.jwt.*
+import models.UserModel
 import requests.LoginRequest
-import ru.drujite.models.UserModel
 import java.util.*
 
 class JwtService(

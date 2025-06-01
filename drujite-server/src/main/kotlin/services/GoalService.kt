@@ -15,7 +15,7 @@ class GoalService(
 
     suspend fun addGoal(goalRequest: AddGoalRequest): Int? {
         val usersSessionId =
-            usersSessionsRepository.getIdByUserAndSession(UUID.fromString(goalRequest.userId), goalRequest.sessionId)
+            usersSessionsRepository.getIdByCharacterAndSession(goalRequest.characterId, goalRequest.sessionId)
                 ?: return null
         val goalModel = GoalModel(
             id = 0,

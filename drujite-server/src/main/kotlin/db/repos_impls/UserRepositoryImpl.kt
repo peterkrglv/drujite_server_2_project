@@ -4,8 +4,8 @@ import UserDAO
 import daoToModel
 import db.mapping.suspendTransaction
 import db.repos.UserRepository
+import models.UserModel
 import org.h2.engine.User
-import ru.drujite.models.UserModel
 import java.util.*
 
 class UserRepositoryImpl : UserRepository {
