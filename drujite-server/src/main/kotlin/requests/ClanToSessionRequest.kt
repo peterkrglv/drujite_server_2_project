@@ -3,7 +3,7 @@ package requests
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AddClanToSessionRequest (
+data class ClanToSessionRequest (
     val clanId: Int,
     val sessionId: Int
 )

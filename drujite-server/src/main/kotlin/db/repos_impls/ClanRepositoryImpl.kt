@@ -3,6 +3,7 @@ package db.repos_impls
 import db.mapping.*
 import db.repos.ClanRepository
 import models.ClanModel
+import org.jetbrains.exposed.sql.and
 
 class ClanRepositoryImpl : ClanRepository {
     override suspend fun add(clan: ClanModel): Int {
@@ -27,15 +28,29 @@ class ClanRepositoryImpl : ClanRepository {
         }
     }
 
-    override suspend fun addClanToSession(clanIdAdd: Int, sessionIdAdd: Int): Boolean {
+    override suspend fun addClanToSession(clanId: Int, sessionId: Int): Boolean {
         return suspendTransaction {
-            val clan = ClanDAO.findById(clanIdAdd)
-            val session = SessionDAO.findById(sessionIdAdd)
+            val clan = ClanDAO.findById(clanId)
+            val session = SessionDAO.findById(sessionId)
             if (clan != null && session != null) {
                 SessionClansDAO.new {
-                    clanId = clanIdAdd
-                    sessionId = sessionIdAdd
+                    this.clanId = clanId
+                    this.sessionId = sessionId
                 }.id.value > 0
+            } else {
+                false
+            }
+        }
+    }
+
+    override suspend fun deleteClanFromSession(clanId: Int, sessionId: Int): Boolean {
+        return suspendTransaction {
+            val sessionClan = SessionClansDAO.find {
+                (SessionsClansTable.clanId eq clanId) and (SessionsClansTable.sessionId eq sessionId)
+            }.firstOrNull()
+            if (sessionClan != null) {
+                sessionClan.delete()
+                true
             } else {
                 false
             }
