@@ -19,12 +19,18 @@ class UserDAO(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<UserDAO>(UserTable)
 
     var phone by UserTable.phone.transform(
-        { SecurityUtils.decrypt(it) },
-        { SecurityUtils.encrypt(it) }
+        { value ->
+            println("Encrypting phone (to database): $value")
+            SecurityUtils.encrypt(value)
+        },
+        { value ->
+            println("Decrypting phone (from database): $value")
+            SecurityUtils.decrypt(value)
+        }
     )
     var username by UserTable.username.transform(
-        { SecurityUtils.decrypt(it) },
-        { SecurityUtils.encrypt(it) }
+        { SecurityUtils.encrypt(it) },
+        { SecurityUtils.decrypt(it) }
     )
     var password by UserTable.password.transform(
         { it },
