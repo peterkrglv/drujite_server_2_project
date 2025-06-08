@@ -1,13 +1,14 @@
 package db.repos_impls
 
-import UserDAO
-import UserTable
-import daoToModel
+import db.mapping.UserDAO
+import db.mapping.UserTable
+import db.mapping.daoToModel
 import db.mapping.suspendTransaction
 import db.repos.UserRepository
 import models.UserModel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import ru.drujite.util.SecurityUtils
 import java.util.*
 
 
@@ -22,7 +23,8 @@ class UserRepositoryImpl : UserRepository {
 
     override suspend fun getByPhone(phone: String): UserModel? {
         return suspendTransaction {
-            UserDAO.find { UserTable.phone eq phone }.firstOrNull()?.let { daoToModel(it) }
+            val encryptedPhone = SecurityUtils.encrypt(phone)
+            UserDAO.find { UserTable.phone eq encryptedPhone }.firstOrNull()?.let { daoToModel(it) }
         }
     }
 

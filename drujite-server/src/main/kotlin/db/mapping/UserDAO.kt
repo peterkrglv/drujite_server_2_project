@@ -1,3 +1,5 @@
+package db.mapping
+
 import models.UserModel
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass

@@ -1,8 +1,8 @@
 package db.repos_impls
 
-import UserDAO
-import UserTable
-import daoToModel
+import db.mapping.UserDAO
+import db.mapping.UserTable
+import db.mapping.daoToModel
 import db.mapping.*
 import db.repos.UsersSessionsRepository
 import models.SessionModel
@@ -35,7 +35,12 @@ class UsersSessionsRepositoryImpl : UsersSessionsRepository {
     }
 
 
-    override suspend fun addCharacter(userId: UUID, sessionId: Int, characterId: Int, transferReason: String?): Boolean {
+    override suspend fun addCharacter(
+        userId: UUID,
+        sessionId: Int,
+        characterId: Int,
+        transferReason: String?
+    ): Boolean {
         return suspendTransaction {
             val existingSession =
                 UsersSessionsDAO.find { UsersSessionsTable.userId eq userId and (UsersSessionsTable.sessionId eq sessionId) }
