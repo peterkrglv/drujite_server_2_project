@@ -54,11 +54,8 @@ fun Route.newsRoute(
                 HttpStatusCode.BadRequest
             )
             val newsList = newsService.getSessionsNews(sessionId)
-            if (newsList.isNotEmpty()) {
-                call.respond(HttpStatusCode.OK, newsList.map { it.toResponse() })
-            } else {
-                call.respond(HttpStatusCode.NotFound)
-            }
+            call.respond(HttpStatusCode.OK, newsList.map { it.toResponse() })
+
         }
     }
 }
