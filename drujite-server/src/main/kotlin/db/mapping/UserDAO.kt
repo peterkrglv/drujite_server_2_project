@@ -35,8 +35,8 @@ class UserDAO(id: EntityID<UUID>) : UUIDEntity(id) {
         { SecurityUtils.decrypt(it) }
     )
     var password by UserTable.password.transform(
-        { it },
-        { SecurityUtils.hashPassword(it) }
+        { SecurityUtils.hashPassword(it) },
+        { it }
     )
     var gender by UserTable.gender
     var isAdmin by UserTable.isAdmin
