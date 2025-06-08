@@ -48,6 +48,8 @@ dependencies {
     implementation("io.ktor:ktor-server-openapi:$ktor_version")
     implementation("io.swagger.codegen.v3:swagger-codegen-generators:$swagger_codegen_version")
     implementation("io.ktor:ktor-server-cors-jvm:2.3.4")
+    implementation("org.mindrot:jbcrypt:0.4")
+
 }
 
 tasks.withType<ProcessResources> {

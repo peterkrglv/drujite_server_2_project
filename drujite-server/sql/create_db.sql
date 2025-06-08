@@ -21,8 +21,8 @@ $$ language 'plpgsql';
 CREATE TABLE users
 (
     id         UUID PRIMARY KEY         DEFAULT gen_random_uuid(),
-    username   VARCHAR(255)       NOT NULL,
-    phone      VARCHAR(15) UNIQUE NOT NULL,
+    username   VARCHAR(512)       NOT NULL,
+    phone      VARCHAR(512) UNIQUE NOT NULL,
     password   VARCHAR(255)       NOT NULL,
     gender     VARCHAR(15)        NOT NULL,
     is_admin BOOLEAN DEFAULT FALSE,

@@ -3,11 +3,12 @@ import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.UUIDEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
+import ru.drujite.util.SecurityUtils
 import java.util.*
 
 object UserTable : UUIDTable("users") {
-    val phone = varchar("phone", 15).uniqueIndex()
-    val username = varchar("username", 255)
+    val phone = varchar("phone", 512).uniqueIndex()
+    val username = varchar("username", 512)
     val password = varchar("password", 255)
     val gender = varchar("gender", 15)
     val isAdmin = bool("is_admin").default(false)
@@ -16,9 +17,18 @@ object UserTable : UUIDTable("users") {
 class UserDAO(id: EntityID<UUID>) : UUIDEntity(id) {
     companion object : UUIDEntityClass<UserDAO>(UserTable)
 
-    var phone by UserTable.phone
-    var username by UserTable.username
-    var password by UserTable.password
+    var phone by UserTable.phone.transform(
+        { SecurityUtils.decrypt(it) },
+        { SecurityUtils.encrypt(it) }
+    )
+    var username by UserTable.username.transform(
+        { SecurityUtils.decrypt(it) },
+        { SecurityUtils.encrypt(it) }
+    )
+    var password by UserTable.password.transform(
+        { it },
+        { SecurityUtils.hashPassword(it) }
+    )
     var gender by UserTable.gender
     var isAdmin by UserTable.isAdmin
 }
