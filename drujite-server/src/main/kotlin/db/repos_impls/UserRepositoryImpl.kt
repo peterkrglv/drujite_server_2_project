@@ -1,12 +1,17 @@
 package db.repos_impls
 
 import UserDAO
+import UserTable
 import daoToModel
 import db.mapping.suspendTransaction
 import db.repos.UserRepository
 import models.UserModel
-import org.h2.engine.User
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.*
+
+
+val logger: Logger = LoggerFactory.getLogger(UserRepositoryImpl::class.java)
 
 class UserRepositoryImpl : UserRepository {
     override suspend fun get(id: UUID): UserModel? {

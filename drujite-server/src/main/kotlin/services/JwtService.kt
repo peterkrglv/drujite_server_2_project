@@ -8,6 +8,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.jwt.*
 import models.UserModel
 import requests.LoginRequest
+import ru.drujite.util.SecurityUtils
 import java.util.*
 
 class JwtService(
@@ -27,7 +28,7 @@ class JwtService(
 
     suspend fun createJwtToken(loginRequest: LoginRequest): String? {
         val foundUser: UserModel? = userService.findByPhone(loginRequest.phone)
-        return if (foundUser != null && loginRequest.password == foundUser.password)
+        return if (foundUser != null && SecurityUtils.verifyPassword(loginRequest.password, foundUser.password))
             JWT.create()
                 .withAudience(audience)
                 .withIssuer(issuer)

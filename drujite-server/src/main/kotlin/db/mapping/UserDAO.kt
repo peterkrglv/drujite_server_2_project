@@ -6,6 +6,7 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 import ru.drujite.util.SecurityUtils
 import java.util.*
 
+
 object UserTable : UUIDTable("users") {
     val phone = varchar("phone", 512).uniqueIndex()
     val username = varchar("username", 512)
