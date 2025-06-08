@@ -37,7 +37,7 @@ fun Route.adminAuthRoute(
             ?: return@post call.respond(HttpStatusCode.Conflict)
         userService.makeAdmin(id = createdUser.id.toString())
             ?: return@post call.respond(HttpStatusCode.Conflict)
-        val loginRequest = LoginRequest(createdUser.phone, createdUser.password)
+        val loginRequest = LoginRequest(request.phone, request.password)
         val token: String? = jwtService.createJwtToken(loginRequest)
         token?.let {
             call.respond(hashMapOf("token" to token))
