@@ -20,6 +20,7 @@ class UserService (
         if (foundUser != null) {
             return null
         }
+        println("UserService Adding user: $user")
         return userRepository.add(user)
     }
 

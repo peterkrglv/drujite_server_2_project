@@ -28,6 +28,7 @@ class JwtService(
 
     suspend fun createJwtToken(loginRequest: LoginRequest): String? {
         val foundUser: UserModel? = userService.findByPhone(loginRequest.phone)
+        println("loginrequest: $loginRequest, foundUser: $foundUser")
         return if (foundUser != null && SecurityUtils.verifyPassword(loginRequest.password, foundUser.password))
             JWT.create()
                 .withAudience(audience)

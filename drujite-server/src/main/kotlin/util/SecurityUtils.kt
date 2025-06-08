@@ -6,6 +6,8 @@ import javax.crypto.KeyGenerator
 import org.mindrot.jbcrypt.BCrypt
 import java.util.Base64
 import javax.crypto.spec.SecretKeySpec
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 object SecurityUtils {
     private const val AES_ALGORITHM = "AES"
@@ -34,6 +36,11 @@ object SecurityUtils {
     }
 
     fun hashPassword(password: String): String = BCrypt.hashpw(password, BCrypt.gensalt())
+    private val logger: Logger = LoggerFactory.getLogger(SecurityUtils::class.java)
 
-    fun verifyPassword(password: String, hashed: String): Boolean = BCrypt.checkpw(password, hashed)
+    fun verifyPassword(password: String, hashed: String): Boolean {
+        val result = BCrypt.checkpw(password, hashed)
+        logger.info("Verifying password: $password, hashed: $hashed, result: $result")
+        return result
+    }
 }
