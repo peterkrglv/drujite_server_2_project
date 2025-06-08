@@ -15,9 +15,8 @@ object SecurityUtils {
     private val secretKey: Key = getKeyFromEnv()
 
     private fun getKeyFromEnv(): Key {
-//        val keyBase64 = System.getenv("AES_SECRET_KEY")
-//            ?: throw IllegalStateException("AES_SECRET_KEY is not set in environment variables")
-        val keyBase64 = "yAcrjpIIh2ga7K3aazWcgw=="
+        val keyBase64 = System.getenv("AES_SECRET_KEY")
+            ?: throw IllegalStateException("AES_SECRET_KEY is not set in environment variables")
         val keyBytes = Base64.getDecoder().decode(keyBase64)
         return SecretKeySpec(keyBytes, AES_ALGORITHM)
     }
