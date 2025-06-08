@@ -16,7 +16,7 @@ fun Route.signupRoute(jwtService: JwtService, userService: UserService) {
         val createdUser = userService.addUser(
             user = signupRequest.toModel()
         )?: return@post call.respond(HttpStatusCode.Conflict)
-        val loginRequest = LoginRequest(createdUser.phone, createdUser.password)
+        val loginRequest = LoginRequest(signupRequest.phone, createdUser.password)
         val token: String? = jwtService.createJwtToken(loginRequest)
         token?.let {
             call.respond(hashMapOf("token" to token))
