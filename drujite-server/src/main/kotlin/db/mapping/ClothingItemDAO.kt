@@ -6,7 +6,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 
 object ClothingItemTable : IntIdTable("clothing_item") {
-    val name = varchar("name", 255)
+    val name = varchar("name", 255).nullable()
     val typeId = integer("type_id").references(ClothingTypeTable.id)
     val imageUrl = varchar("image_url", 255).nullable()
     val iconImageUrl = varchar("image_icon_url", 255).nullable()

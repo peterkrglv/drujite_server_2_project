@@ -8,8 +8,8 @@ import ru.drujite.models.ClothingTypeWithItems
 class ClothingService(
     private val clothingRepository: ClothingRepository,
 ) {
-    suspend fun addClothingType(name: String): Int {
-        return clothingRepository.addClothingType(name)
+    suspend fun addClothingType(clothingType: ClothingType): Int {
+        return clothingRepository.addClothingType(clothingType)
     }
 
     suspend fun deleteClothingType(id: Int): Boolean {
@@ -20,8 +20,8 @@ class ClothingService(
         return clothingRepository.getClothingTypes()
     }
 
-    suspend fun addClothingItem(clothingTypeId: Int): Int {
-        return clothingRepository.addClothingItem(clothingTypeId)
+    suspend fun addClothingItem(clothingItem: ClothingItem): Int {
+        return clothingRepository.addClothingItem(clothingItem)
     }
 
     suspend fun addImageUrl(id: Int, imageUrl: String): Boolean {
@@ -46,5 +46,9 @@ class ClothingService(
 
     suspend fun getAllClothingItems(): List<ClothingTypeWithItems> {
         return clothingRepository.getAllClothingItems()
+    }
+
+    suspend fun getAllEditableClothingItems(): List<ClothingTypeWithItems> {
+        return clothingRepository.getAllEditableClothingItems()
     }
 }

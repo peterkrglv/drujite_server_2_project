@@ -7,10 +7,11 @@ import ru.drujite.models.ClothingType
 import ru.drujite.models.ClothingTypeWithItems
 
 class ClothingRepositoryImpl : ClothingRepository {
-    override suspend fun addClothingType(name: String): Int {
+    override suspend fun addClothingType(clothingType: ClothingType): Int {
         return suspendTransaction {
             ClothingTypeDAO.new {
-                this.name = name
+                this.name = clothingType.name
+                this.isEditable = clothingType.isEditable
             }.id.value
         }
     }
@@ -25,16 +26,27 @@ class ClothingRepositoryImpl : ClothingRepository {
         return suspendTransaction {
             ClothingTypeDAO.all().map {
                 ClothingType(
-                    id = it.id.value, name = it.name
+                    id = it.id.value, name = it.name, isEditable = it.isEditable
                 )
             }
         }
     }
 
-    override suspend fun addClothingItem(clothingTypeId: Int): Int {
+    override suspend fun getEditableClothingTypes(): List<ClothingType> {
+        return suspendTransaction {
+            ClothingTypeDAO.find { ClothingTypeTable.isEditable eq true }.map {
+                ClothingType(
+                    id = it.id.value, name = it.name, isEditable = it.isEditable
+                )
+            }
+        }
+    }
+
+    override suspend fun addClothingItem(clothingItem: ClothingItem): Int {
         return suspendTransaction {
             ClothingItemDAO.new {
-                this.typeId = clothingTypeId
+                this.name = clothingItem.name
+                this.typeId = clothingItem.typeId
             }.id.value
         }
     }
@@ -45,7 +57,7 @@ class ClothingRepositoryImpl : ClothingRepository {
                 it.imageUrl = imageUrl
                 it.flush()
                 true
-            } ?: false
+            } == true
         }
     }
 
@@ -73,13 +85,20 @@ class ClothingRepositoryImpl : ClothingRepository {
 
     override suspend fun addClothingItemsToCharacter(characterId: Int, itemsIds: List<Int>): Boolean {
         return suspendTransaction {
-            CharacterClothingDAO.find { CharacterClothingTable.characterId eq characterId }.forEach {
-                it.delete()
-            }
+            val existingItems = CharacterClothingDAO.find { CharacterClothingTable.characterId eq characterId }
+            val existingTypeIds =
+                existingItems.mapNotNull { it.clothingItemId?.let { ClothingItemDAO.findById(it)?.typeId } }.toSet()
+
             itemsIds.forEach { itemId ->
-                CharacterClothingDAO.new {
-                    this.characterId = characterId
-                    this.clothingItemId = itemId
+                val item = ClothingItemDAO.findById(itemId)
+                if (item != null) {
+                    if (existingTypeIds.contains(item.typeId)) {
+                        existingItems.find { it.clothingItemId == item.id.value }?.delete()
+                    }
+                    CharacterClothingDAO.new {
+                        this.characterId = characterId
+                        this.clothingItemId = item.id.value
+                    }
                 }
             }
             true
@@ -94,6 +113,7 @@ class ClothingRepositoryImpl : ClothingRepository {
                     ClothingItem(
                         id = item.id.value,
                         typeId = item.typeId,
+                        name = item.name,
                         imageUrl = item.imageUrl,
                         iconUrl = item.iconImageUrl
                     )
@@ -110,6 +130,28 @@ class ClothingRepositoryImpl : ClothingRepository {
                         id = it.id.value,
                         typeId = it.typeId,
                         imageUrl = it.imageUrl,
+                        name = it.name,
+                        iconUrl = it.iconImageUrl
+                    )
+                }
+                ClothingTypeWithItems(
+                    id = type.id.value,
+                    name = type.name,
+                    items = items
+                )
+            }
+        }
+    }
+
+    override suspend fun getAllEditableClothingItems(): List<ClothingTypeWithItems> {
+        return suspendTransaction {
+            ClothingTypeDAO.find { ClothingTypeTable.isEditable eq true }.map { type ->
+                val items = ClothingItemDAO.find { ClothingItemTable.typeId eq type.id.value }.map {
+                    ClothingItem(
+                        id = it.id.value,
+                        typeId = it.typeId,
+                        imageUrl = it.imageUrl,
+                        name = it.name,
                         iconUrl = it.iconImageUrl
                     )
                 }

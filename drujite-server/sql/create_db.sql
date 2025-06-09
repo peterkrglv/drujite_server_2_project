@@ -217,7 +217,6 @@ CREATE TABLE clothing_type
 (
     id         SERIAL PRIMARY KEY,
     name       VARCHAR(255) NOT NULL,
-    type       VARCHAR(255),
     isEditable BOOLEAN                  DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())

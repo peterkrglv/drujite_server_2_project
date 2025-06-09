@@ -5,11 +5,12 @@ import ru.drujite.models.ClothingType
 import ru.drujite.models.ClothingTypeWithItems
 
 interface ClothingRepository {
-    suspend fun addClothingType(name: String): Int
+    suspend fun addClothingType(clothingType: ClothingType): Int
     suspend fun deleteClothingType(id: Int): Boolean
     suspend fun getClothingTypes(): List<ClothingType>
+    suspend fun getEditableClothingTypes(): List<ClothingType>
     suspend fun addClothingItem(
-        clothingTypeId: Int,
+        clothingItem: ClothingItem,
     ): Int
 
     suspend fun addImageUrl(
@@ -31,4 +32,5 @@ interface ClothingRepository {
 
     suspend fun getCharactersClothingItems(characterId: Int): List<ClothingItem>
     suspend fun getAllClothingItems(): List<ClothingTypeWithItems>
+    suspend fun getAllEditableClothingItems(): List<ClothingTypeWithItems>
 }

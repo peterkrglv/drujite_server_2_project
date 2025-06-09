@@ -21,8 +21,8 @@ fun Route.clothingTypeRoute(
         }
 
         post {
-            val name = call.receive<ClothingTypeRequest>().name
-            val id = clothingService.addClothingType(name)
+            val request = call.receive<ClothingTypeRequest>()
+            val id = clothingService.addClothingType(request.toModel())
             call.respond(HttpStatusCode.Created, IdResponse(id))
         }
 
@@ -39,6 +39,12 @@ fun Route.clothingTypeRoute(
         }
     }
 }
+
+private fun ClothingTypeRequest.toModel() = ClothingType(
+    id = 0,
+    name = name,
+    isEditable = isEditable
+)
 
 private fun ClothingType.toResponse() = ClothingTypeResponse(
     id = id,
