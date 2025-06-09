@@ -85,20 +85,13 @@ class ClothingRepositoryImpl : ClothingRepository {
 
     override suspend fun addClothingItemsToCharacter(characterId: Int, itemsIds: List<Int>): Boolean {
         return suspendTransaction {
-            val existingItems = CharacterClothingDAO.find { CharacterClothingTable.characterId eq characterId }
-            val existingTypeIds =
-                existingItems.mapNotNull { it.clothingItemId?.let { ClothingItemDAO.findById(it)?.typeId } }.toSet()
-
+            CharacterClothingDAO.find { CharacterClothingTable.characterId eq characterId }.forEach {
+                it.delete()
+            }
             itemsIds.forEach { itemId ->
-                val item = ClothingItemDAO.findById(itemId)
-                if (item != null) {
-                    if (existingTypeIds.contains(item.typeId)) {
-                        existingItems.find { it.clothingItemId == item.id.value }?.delete()
-                    }
-                    CharacterClothingDAO.new {
-                        this.characterId = characterId
-                        this.clothingItemId = item.id.value
-                    }
+                CharacterClothingDAO.new {
+                    this.characterId = characterId
+                    this.clothingItemId = itemId
                 }
             }
             true
