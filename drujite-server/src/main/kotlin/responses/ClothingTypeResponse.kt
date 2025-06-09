@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 data class ClothingTypeResponse(
     val id: Int,
     val name: String,
+    val isEditable: Boolean
 )

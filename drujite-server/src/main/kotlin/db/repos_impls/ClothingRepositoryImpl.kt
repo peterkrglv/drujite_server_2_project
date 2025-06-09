@@ -137,7 +137,8 @@ class ClothingRepositoryImpl : ClothingRepository {
                 ClothingTypeWithItems(
                     id = type.id.value,
                     name = type.name,
-                    items = items
+                    items = items,
+                    isEditable = type.isEditable
                 )
             }
         }
@@ -158,7 +159,8 @@ class ClothingRepositoryImpl : ClothingRepository {
                 ClothingTypeWithItems(
                     id = type.id.value,
                     name = type.name,
-                    items = items
+                    items = items,
+                    isEditable = type.isEditable
                 )
             }
         }

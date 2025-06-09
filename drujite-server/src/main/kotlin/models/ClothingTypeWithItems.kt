@@ -7,5 +7,6 @@ import kotlinx.serialization.Serializable
 data class ClothingTypeWithItems(
     val id: Int,
     val name: String,
+    val isEditable: Boolean,
     val items: List<ClothingItem>
 )

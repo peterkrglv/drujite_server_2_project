@@ -39,11 +39,6 @@ fun Route.clothingRoute(
             val clothingItems = clothingService.getAllClothingItems()
             call.respond(HttpStatusCode.OK, clothingItems)
         }
-
-        get("/editable") {
-            val clothingItems = clothingService.getAllEditableClothingItems()
-            call.respond(HttpStatusCode.OK, clothingItems)
-        }
     }
 }
 
