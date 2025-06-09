@@ -137,24 +137,22 @@ class ClothingRepositoryImpl : ClothingRepository {
         }
     }
 
-    override suspend fun getAllEditableClothingItems(): List<ClothingTypeWithItems> {
+    override suspend fun getCharactersEditableClothingItems(characterId: Int): List<ClothingItem> {
         return suspendTransaction {
-            ClothingTypeDAO.find { ClothingTypeTable.isEditable eq true }.map { type ->
-                val items = ClothingItemDAO.find { ClothingItemTable.typeId eq type.id.value }.map {
-                    ClothingItem(
-                        id = it.id.value,
-                        typeId = it.typeId,
-                        imageUrl = it.imageUrl,
-                        name = it.name,
-                        iconUrl = it.iconImageUrl
-                    )
+            CharacterClothingDAO.find { CharacterClothingTable.characterId eq characterId }.mapNotNull {
+                val clothingItem = it.clothingItemId ?: return@mapNotNull null
+                ClothingItemDAO.findById(clothingItem)?.let { item ->
+                    val type = ClothingTypeDAO.findById(item.typeId)
+                    if (type?.isEditable == true) {
+                        ClothingItem(
+                            id = item.id.value,
+                            typeId = item.typeId,
+                            name = item.name,
+                            imageUrl = item.imageUrl,
+                            iconUrl = item.iconImageUrl
+                        )
+                    } else null
                 }
-                ClothingTypeWithItems(
-                    id = type.id.value,
-                    name = type.name,
-                    items = items,
-                    isEditable = type.isEditable
-                )
             }
         }
     }

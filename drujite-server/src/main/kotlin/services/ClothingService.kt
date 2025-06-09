@@ -48,7 +48,7 @@ class ClothingService(
         return clothingRepository.getAllClothingItems()
     }
 
-    suspend fun getAllEditableClothingItems(): List<ClothingTypeWithItems> {
-        return clothingRepository.getAllEditableClothingItems()
+    suspend fun getCharactersEditableClothingItems(characterId: Int): List<ClothingItem> {
+        return clothingRepository.getCharactersEditableClothingItems(characterId)
     }
 }

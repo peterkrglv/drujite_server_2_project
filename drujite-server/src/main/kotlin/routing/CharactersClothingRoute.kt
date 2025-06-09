@@ -19,6 +19,13 @@ fun Route.charactersClothingRoute(
             call.respond(HttpStatusCode.OK, clothingItems)
         }
 
+        get("editable") {
+            val characterId = call.request.queryParameters["id"]?.toIntOrNull()
+                ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val clothingItems = clothingService.getCharactersEditableClothingItems(characterId)
+            call.respond(HttpStatusCode.OK, clothingItems)
+        }
+
         post {
             val request = call.receive<AddCharactersClothingRequest>()
             val characterId = request.characterId

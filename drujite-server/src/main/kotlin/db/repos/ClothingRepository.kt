@@ -32,5 +32,7 @@ interface ClothingRepository {
 
     suspend fun getCharactersClothingItems(characterId: Int): List<ClothingItem>
     suspend fun getAllClothingItems(): List<ClothingTypeWithItems>
-    suspend fun getAllEditableClothingItems(): List<ClothingTypeWithItems>
+    suspend fun getCharactersEditableClothingItems(
+        characterId: Int
+    ): List<ClothingItem>
 }
