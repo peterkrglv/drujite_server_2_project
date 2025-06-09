@@ -21,11 +21,11 @@ $$ language 'plpgsql';
 CREATE TABLE users
 (
     id         UUID PRIMARY KEY         DEFAULT gen_random_uuid(),
-    username   VARCHAR(512)       NOT NULL,
+    username   VARCHAR(512)        NOT NULL,
     phone      VARCHAR(512) UNIQUE NOT NULL,
-    password   VARCHAR(255)       NOT NULL,
-    gender     VARCHAR(15)        NOT NULL,
-    is_admin BOOLEAN DEFAULT FALSE,
+    password   VARCHAR(255)        NOT NULL,
+    gender     VARCHAR(15)         NOT NULL,
+    is_admin   BOOLEAN                  DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
@@ -43,8 +43,8 @@ CREATE TABLE sessions
     id          SERIAL PRIMARY KEY,
     name        VARCHAR(255)             NOT NULL,
     description TEXT                     NOT NULL,
-    start_date   TIMESTAMP WITH TIME ZONE NOT NULL,
-    end_date     TIMESTAMP WITH TIME ZONE NOT NULL,
+    start_date  TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_date    TIMESTAMP WITH TIME ZONE NOT NULL,
     image_url   VARCHAR(255),
     created_at  TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
@@ -64,7 +64,7 @@ EXECUTE PROCEDURE update_modified_column();
 CREATE TABLE timetables
 (
     id         SERIAL PRIMARY KEY,
-    session_id  INT REFERENCES sessions (id) ON DELETE CASCADE,
+    session_id INT REFERENCES sessions (id) ON DELETE CASCADE,
     date       DATE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
@@ -80,14 +80,14 @@ EXECUTE PROCEDURE update_modified_column();
 --events
 CREATE TABLE events
 (
-    id          SERIAL PRIMARY KEY,
+    id           SERIAL PRIMARY KEY,
     timetable_id INT REFERENCES timetables (id) ON DELETE CASCADE,
-    num         INT,
-    name        VARCHAR(65) NOT NULL,
-    time        TIME WITHOUT TIME ZONE NOT NULL,
-    is_title     BOOLEAN DEFAULT FALSE,
-    created_at  TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+    num          INT,
+    name         VARCHAR(65)            NOT NULL,
+    time         TIME WITHOUT TIME ZONE NOT NULL,
+    is_title     BOOLEAN                  DEFAULT FALSE,
+    created_at   TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
+    updated_at   TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
 ALTER TABLE events
     ALTER COLUMN time DROP NOT NULL;
@@ -105,11 +105,11 @@ CREATE TABLE news
     id         SERIAL PRIMARY KEY,
     session_id INT REFERENCES sessions (id) ON DELETE CASCADE,
     title      VARCHAR(255) NOT NULL,
-    content    TEXT NOT NULL ,
+    content    TEXT         NOT NULL,
     time       TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
-    image_url   VARCHAR(255),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+    image_url  VARCHAR(255),
+    created_at TIMESTAMP WITH TIME ZONE    DEFAULT convert_to_moscow_time(now()),
+    updated_at TIMESTAMP WITH TIME ZONE    DEFAULT convert_to_moscow_time(now())
 );
 
 CREATE TRIGGER update_news_modtime
@@ -141,10 +141,10 @@ EXECUTE PROCEDURE update_modified_column();
 CREATE TABLE characters
 (
     id         SERIAL PRIMARY KEY,
-    clan_id    INT REFERENCES clans(id) ON DELETE CASCADE,
-    name       VARCHAR(255) NOT NULL ,
-    story      TEXT NOT NULL,
-    image_url   VARCHAR(255),
+    clan_id    INT REFERENCES clans (id) ON DELETE CASCADE,
+    name       VARCHAR(255) NOT NULL,
+    story      TEXT         NOT NULL,
+    image_url  VARCHAR(255),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
@@ -161,7 +161,7 @@ CREATE TABLE sessions_clans
 (
     id         SERIAL PRIMARY KEY,
     session_id INT REFERENCES sessions (id) ON DELETE CASCADE,
-    clan_id    INT REFERENCES clans(id) ON DELETE CASCADE,
+    clan_id    INT REFERENCES clans (id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
@@ -176,13 +176,13 @@ EXECUTE PROCEDURE update_modified_column();
 --users_sessions
 CREATE TABLE users_sessions
 (
-    id           SERIAL PRIMARY KEY,
-    user_id      UUID REFERENCES users (id) ON DELETE CASCADE,
-    session_id   INT REFERENCES sessions (id) ON DELETE CASCADE,
-    character_id INT REFERENCES characters (id) ON DELETE SET NULL,
+    id              SERIAL PRIMARY KEY,
+    user_id         UUID REFERENCES users (id) ON DELETE CASCADE,
+    session_id      INT REFERENCES sessions (id) ON DELETE CASCADE,
+    character_id    INT REFERENCES characters (id) ON DELETE SET NULL,
     transfer_reason TEXT,
-    created_at   TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
-    updated_at   TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+    created_at      TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
+    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
 
 CREATE TRIGGER update_users_sessions_modtime
@@ -195,12 +195,12 @@ EXECUTE PROCEDURE update_modified_column();
 --goals
 CREATE TABLE goals
 (
-    id           SERIAL PRIMARY KEY,
-    users_session_id INT REFERENCES users_sessions(id) ON DELETE CASCADE,
-    name         VARCHAR(255) NOT NULL,
-    is_completed  BOOLEAN DEFAULT FALSE,
-    created_at   TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
-    updated_at   TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+    id               SERIAL PRIMARY KEY,
+    users_session_id INT REFERENCES users_sessions (id) ON DELETE CASCADE,
+    name             VARCHAR(255) NOT NULL,
+    is_completed     BOOLEAN                  DEFAULT FALSE,
+    created_at       TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
+    updated_at       TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
 
 CREATE TRIGGER update_goals_modtime
@@ -213,31 +213,37 @@ EXECUTE PROCEDURE update_modified_column();
 --clothing
 
 -- clothing_type table
-CREATE TABLE clothing_type (
-                               id SERIAL PRIMARY KEY,
-                               name VARCHAR(255) NOT NULL,
-                               created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
-                               updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+CREATE TABLE clothing_type
+(
+    id         SERIAL PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL,
+    type       VARCHAR(255),
+    isEditable BOOLEAN                  DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
 
 -- clothing_item table
-CREATE TABLE clothing_item (
-                               id SERIAL PRIMARY KEY,
-                               type_id INT REFERENCES clothing_type(id) ON DELETE CASCADE,  -- Corrected FK column name
-                               image_url VARCHAR(255),
-                               image_icon_url VARCHAR(255),
-                               created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
-                               updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+CREATE TABLE clothing_item
+(
+    id             SERIAL PRIMARY KEY,
+    name           VARCHAR(255)             DEFAULT NULL,
+    type_id        INT REFERENCES clothing_type (id) ON DELETE CASCADE,
+    image_url      VARCHAR(255),
+    image_icon_url VARCHAR(255),
+    created_at     TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
+    updated_at     TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
 
 
 -- character_clothing table
-CREATE TABLE character_clothing (
-                                    id SERIAL PRIMARY KEY,
-                                    character_id INT REFERENCES characters(id) ON DELETE CASCADE, -- Added ON DELETE CASCADE
-                                    clothing_item_id INT REFERENCES clothing_item(id) ON DELETE CASCADE, -- Added ON DELETE CASCADE
-                                    created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
-                                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
+CREATE TABLE character_clothing
+(
+    id               SERIAL PRIMARY KEY,
+    character_id     INT REFERENCES characters (id) ON DELETE CASCADE,    -- Added ON DELETE CASCADE
+    clothing_item_id INT REFERENCES clothing_item (id) ON DELETE CASCADE, -- Added ON DELETE CASCADE
+    created_at       TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
+    updated_at       TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 
 );
 
