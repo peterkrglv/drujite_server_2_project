@@ -24,7 +24,9 @@ fun Route.superAdminRoute(
     val logger: Logger = LoggerFactory.getLogger(Route::class.java)
     authenticate {
         post("make-admin") {
+            logger.info("Received request to make an admin")
             val principal = call.principal<JWTPrincipal>()
+            logger.info("Principal extracted: $principal")
             val userId =
                 principal?.let { jwtService.extractId(it) } ?: return@post call.respond(HttpStatusCode.Unauthorized)
             logger.info("User ID is $userId")
@@ -46,6 +48,7 @@ fun Route.superAdminRoute(
             }
         }
         get("get-users") {
+            logger.info("Received request to fetch all users")
             val principal = call.principal<JWTPrincipal>()
             logger.info("Fetching users for principal: $principal")
             val userId =
