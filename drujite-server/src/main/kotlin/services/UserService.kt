@@ -28,7 +28,15 @@ class UserService (
         return userRepository.checkIsAdmin(UUID.fromString(id))
     }
 
-    suspend fun makeAdmin(id: String): Boolean {
-        return userRepository.makeAdmin(UUID.fromString(id))
+    suspend fun makeAdmin(uuid: UUID): Boolean {
+        return userRepository.makeAdmin(uuid)
+    }
+
+    suspend fun checkIfSuperAdmin(id: String): Boolean {
+        return userRepository.checkIfSuperAdmin(UUID.fromString(id))
+    }
+
+    suspend fun getAllUsers(): List<UserModel> {
+        return userRepository.getAllUsers()
     }
 }

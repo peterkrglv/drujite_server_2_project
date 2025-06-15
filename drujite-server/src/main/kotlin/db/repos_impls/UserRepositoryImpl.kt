@@ -8,11 +8,11 @@ import db.repos.UserRepository
 import models.UserModel
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import ru.drujite.responces.UserResponse
+import ru.drujite.responses.UserAdminResponse
 import ru.drujite.util.SecurityUtils
 import java.util.*
 
-
-val logger: Logger = LoggerFactory.getLogger(UserRepositoryImpl::class.java)
 
 class UserRepositoryImpl : UserRepository {
     override suspend fun get(id: UUID): UserModel? {
@@ -57,10 +57,23 @@ class UserRepositoryImpl : UserRepository {
     override suspend fun makeAdmin(id: UUID): Boolean {
         return suspendTransaction {
             UserDAO.findById(id)?.let {
-                it.isAdmin = true
-                it.flush()
+                it.isAdmin = !it.isAdmin
                 true
-            } ?: false
+            } == true
+        }
+    }
+
+    override suspend fun checkIfSuperAdmin(id: UUID): Boolean {
+        return suspendTransaction {
+            UserDAO.findById(id)?.isSuperAdmin == true
+        }
+    }
+
+    override suspend fun getAllUsers(): List<UserModel> {
+        return suspendTransaction {
+            UserDAO.all().map { daoToModel(it) }
         }
     }
 }
+
+

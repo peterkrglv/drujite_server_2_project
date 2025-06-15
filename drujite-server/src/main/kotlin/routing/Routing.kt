@@ -94,6 +94,10 @@ fun Application.configureRouting(
             charactersClothingRoute(clothingService)
         }
 
+        route(v1 + "super-admin") {
+            superAdminRoute(jwtService, userService)
+        }
+
         get(v1) {
             call.respondText(
                 """

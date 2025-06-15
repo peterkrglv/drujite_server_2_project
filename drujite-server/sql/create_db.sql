@@ -26,6 +26,7 @@ CREATE TABLE users
     password   VARCHAR(255)        NOT NULL,
     gender     VARCHAR(15)         NOT NULL,
     is_admin   BOOLEAN                  DEFAULT FALSE,
+    is_superadmin BOOLEAN            DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now()),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT convert_to_moscow_time(now())
 );
