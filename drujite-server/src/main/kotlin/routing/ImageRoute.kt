@@ -5,12 +5,9 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import ru.drujite.services.ImageService
 
 fun Route.imageRoute(imageService: ImageService) {
-    val logger: Logger = LoggerFactory.getLogger(Route::class.java)
     authenticate {
         post("/{entityType}/{id}") {
             val entityType = call.parameters["entityType"] ?: return@post call.respond(
