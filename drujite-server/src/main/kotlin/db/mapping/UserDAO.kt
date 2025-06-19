@@ -49,5 +49,6 @@ fun daoToModel(dao: UserDAO) = UserModel(
     phone = dao.phone,
     username = dao.username,
     password = dao.password,
-    gender = dao.gender
+    gender = dao.gender,
+    isAdmin = dao.isAdmin
 )
