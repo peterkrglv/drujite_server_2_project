@@ -9,5 +9,6 @@ data class SessionResponse (
     val description: String,
     val startDate: String,
     val endDate: String,
-    val imageUrl: String? = null
+    val imageUrl: String? = null,
+    val qrLink: String? = null
 )

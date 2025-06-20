@@ -63,9 +63,10 @@ private fun SessionModel.toResponse(): SessionResponse {
     return SessionResponse(
         id = this.id,
         name = this.name,
-        description = this.description ?: "",
+        description = this.description,
         startDate = this.startDate,
         endDate = this.endDate,
-        imageUrl = this.imageUrl
+        imageUrl = this.imageUrl,
+        qrLink = this.qrLink
     )
 }

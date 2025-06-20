@@ -33,5 +33,6 @@ fun daoToModel(dao: SessionDAO) = SessionModel(
     description = dao.description,
     startDate = dao.startDate.toString(),
     endDate = dao.endDate.toString(),
-    imageUrl = dao.imageUrl
+    imageUrl = dao.imageUrl,
+    qrLink = dao.qr
 )
