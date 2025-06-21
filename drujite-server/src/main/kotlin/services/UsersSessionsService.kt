@@ -3,8 +3,11 @@ package services
 import db.repos.CharacterRepository
 import db.repos.SessionRepository
 import db.repos.UsersSessionsRepository
+import db.repos_impls.EventRepositoryImpl
 import models.CharacterModel
 import models.SessionModel
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import ru.drujite.util.getRedirectedUrl
 import java.util.*
 
@@ -13,6 +16,8 @@ class UsersSessionsService(
     private val characterRepository: CharacterRepository,
     private val sessionRepository: SessionRepository
 ) {
+
+    private val logger: Logger = LoggerFactory.getLogger(UsersSessionsService::class.java)
     suspend fun addUserSession(
         userId: String,
         sessionId: Int,
@@ -88,13 +93,17 @@ class UsersSessionsService(
         userId: String,
         qr: String
     ): SessionModel? {
+        logger.info("Adding user session: $qr")
         var session = sessionRepository.getSessionByQr(qr)
+        logger.info("Session: $session")
         if (session == null) {
-            val redirectedUrl = getRedirectedUrl(userId)
+            val redirectedUrl = getRedirectedUrl(qr)
+            logger.info("Redirect: $redirectedUrl")
             session = redirectedUrl?.let {
                 sessionRepository.getSessionByQr(it)
             }
         }
+        logger.info("Session after redirect: $session")
         return session?.let {
             usersSessionsRepository.addUserSession(
                 userId = UUID.fromString(userId),
