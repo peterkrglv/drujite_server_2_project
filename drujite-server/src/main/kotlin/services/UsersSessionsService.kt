@@ -88,16 +88,19 @@ class UsersSessionsService(
         userId: String,
         qr: String
     ): SessionModel? {
-        val redirectedQrLink = getRedirectedUrl(qr)
-        return redirectedQrLink?.let {
-            val session = sessionRepository.getSessionByQr(redirectedQrLink)
-            session?.let {
-                usersSessionsRepository.addUserSession(
-                    userId = UUID.fromString(userId),
-                    sessionId = session.id
-                )
-                session
+        var session = sessionRepository.getSessionByQr(qr)
+        if (session == null) {
+            val redirectedUrl = getRedirectedUrl(userId)
+            session = redirectedUrl?.let {
+                sessionRepository.getSessionByQr(it)
             }
+        }
+        return session?.let {
+            usersSessionsRepository.addUserSession(
+                userId = UUID.fromString(userId),
+                sessionId = session.id
+            )
+            session
         }
     }
 }
