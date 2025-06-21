@@ -80,7 +80,6 @@ fun Route.eventRoute(
 private fun EventModel.toResponse() = EventResponse(
     id = this.id,
     timetableId = this.timetableId,
-    num = this.num,
     name = this.name,
     time = this.time,
     isTitle = this.isTitle
@@ -90,7 +89,6 @@ private fun AddEventRequest.toModel() =
     EventModel(
         id = 0,
         timetableId = this.timetableId,
-        num = this.num,
         name = this.name,
         time = this.time,
         isTitle = this.isTitle

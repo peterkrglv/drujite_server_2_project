@@ -33,12 +33,17 @@ class TimeTableService(
         val timeTable = timeTableRepository.getBySessionAndDate(sessionId, date) ?: return emptyList()
         val eventIds = eventRepository.getTimetableEventIds(timeTable.id)
         return eventIds.mapNotNull { eventRepository.get(it) }
-            .sortedBy { it.num }
+            .sortedBy { it.time }
     }
 
     suspend fun getEventsByTimetableId(timetableId: Int): List<EventModel> {
         val events = eventRepository.getTimetableEventIds(timetableId)
         return events.mapNotNull { eventRepository.get(it) }
-            .sortedBy { it.num }
+            .sortedBy {
+                val parts = it.time.split(":")
+                val hours = parts[0].toInt()
+                val minutes = parts[1].toInt()
+                hours * 60 + minutes
+            }
     }
 }

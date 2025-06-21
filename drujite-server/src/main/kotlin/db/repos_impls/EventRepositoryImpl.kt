@@ -19,7 +19,6 @@ class EventRepositoryImpl : EventRepository {
             if (timetable != null) {
                 EventDAO.new {
                     timetableId = event.timetableId
-                    num = event.num
                     name = event.name
                     time = java.time.LocalTime.parse(event.time)
                     isTitle = event.isTitle
@@ -36,7 +35,6 @@ class EventRepositoryImpl : EventRepository {
                 EventModel(
                     id = it.id.value,
                     timetableId = it.timetableId,
-                    num = it.num,
                     name = it.name,
                     time = it.time.toString(),
                     isTitle = it.isTitle
